@@ -219,6 +219,17 @@ Datatype *TypeOp::getInputCast(const PcodeOp *op,int4 slot,const CastStrategy *c
   return castStrategy->castStandard(reqtype,curtype,false,true);
 }
 
+void TypeOp::printExport(ostream &s, const PcodeOp *op)
+{
+    Varnode::printExport(s, op->getOut());
+    auto opName = get_opname(op->getOpcode()->getOpcode());
+    s << " = " << opName << ' ';
+    for (int4 i = 0; i < op->numInput(); ++i) {
+      Varnode::printExport(s, op->getIn(i));
+      s << ' ';
+    }
+}
+
 /// Many languages can mark an integer constant as explicitly \e unsigned. When
 /// the decompiler is deciding on \e cast operations, this is one of the checks
 /// it performs.  This method checks if the indicated input is an

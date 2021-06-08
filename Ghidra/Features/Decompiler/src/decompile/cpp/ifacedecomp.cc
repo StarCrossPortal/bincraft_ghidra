@@ -85,6 +85,7 @@ void IfaceDecompCapability::registerCommands(IfaceStatus *status)
   status->registerCom(new IfcProduceC(),"produce","C");
   status->registerCom(new IfcProducePrototypes(),"produce","prototypes");
   status->registerCom(new IfcPrintRaw(),"print","raw");
+  status->registerCom(new IfcPrintExport(), "print", "export");
   status->registerCom(new IfcPrintInputs(),"print","inputs");
   status->registerCom(new IfcPrintInputsAll(),"print","inputs","all");
   status->registerCom(new IfcListaction(),"list","action");
@@ -873,6 +874,15 @@ void IfcPrintLanguage::execute(istream &s)
   dcp->conf->print->setOutputStream(status->fileoptr);
   dcp->conf->print->docFunction(dcp->fd);
   dcp->conf->setPrintLanguage(curlangname); // Reset to original language
+}
+
+void IfcPrintExport::execute(istream &s)
+
+{
+  if (dcp->fd == (Funcdata *) 0)
+    throw IfaceExecutionError("No function selected");
+
+  dcp->fd->printExport(*status->fileoptr);
 }
 
 /// \class IfcPrintRaw

@@ -177,6 +177,7 @@ public:
   void doLiveInject(InjectPayload *payload,const Address &addr,BlockBasic *bl,list<PcodeOp *>::iterator pos);
   
   void printRaw(ostream &s) const;			///< Print raw p-code op descriptions to a stream
+  void printExport(ostream &s) const;
   void printVarnodeTree(ostream &s) const;		///< Print a description of all Varnodes to a stream
   void printBlockTree(ostream &s) const;		///< Print a description of control-flow structuring to a stream
   void printLocalRange(ostream &s) const;		///< Print description of memory ranges associated with local scopes

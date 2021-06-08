@@ -132,6 +132,8 @@ public:
   /// \param op is the specific PcodeOp to print
   virtual void printRaw(ostream &s,const PcodeOp *op)=0;
 
+  void printExport(ostream &s, const PcodeOp *op);
+  
   /// \brief Get the name of the op-code as it should be displayed in context.
   ///
   /// Depending on the context, the same op-code may get displayed in different ways.

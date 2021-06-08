@@ -445,6 +445,11 @@ public:
   virtual void execute(istream &s);
 };
 
+class IfcPrintExport : public IfaceDecompCommand {
+public:
+  virtual void execute(istream &s);
+};
+
 class IfcPrintRaw : public IfaceDecompCommand {
 public:
   virtual void execute(istream &s);

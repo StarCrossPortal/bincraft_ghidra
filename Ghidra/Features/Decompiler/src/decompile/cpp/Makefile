@@ -7,7 +7,7 @@ ADDITIONAL_FLAGS=
 SLEIGHVERSION=sleigh-2.1.0
 
 EXTENSION_POINT=../../../../../../../ghidra.ext/Ghidra/Features/DecompilerExtensions/src/decompile/cpp
-GHIDRA_BIN=../../../../../../../ghidra.bin
+GHIDRA_BIN=../.;./../../../../../ghidra.bin
 
 OS = $(shell uname -s)
 CPU = $(shell uname -m)

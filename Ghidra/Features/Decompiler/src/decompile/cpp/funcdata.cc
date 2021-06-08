@@ -208,6 +208,25 @@ void Funcdata::printRaw(ostream &s) const
     bblocks.printRaw(s);
 }
 
+void Funcdata::printExport(ostream &s) const
+
+{
+  if (bblocks.getSize() == 0) {
+    if (obank.empty())
+      throw RecovError("No operations to print");
+
+    PcodeOpTree::const_iterator iter;
+    s << "Raw operations: \n";
+    for (iter = obank.beginAll(); iter != obank.endAll(); ++iter) {
+      s << (*iter).second->getSeqNum() << ":\t";
+      (*iter).second->printExport(s);
+      s << endl;
+    }
+  } else {
+    bblocks.printExport(s);
+  }
+}
+
 /// This routine searches for an marks Varnode objects, like stack-pointer registers,
 /// that are used as a base address for a virtual address space. Each Varnode gets a
 /// special data-type and is marked so that Varnode::isSpacebase() returns \b true.

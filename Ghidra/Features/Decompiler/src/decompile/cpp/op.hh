@@ -218,6 +218,7 @@ public:
   uintb getNZMaskLocal(bool cliploop) const; ///< Calculate known zero bits for output to this op
   int4 compareOrder(const PcodeOp *bop) const; ///< Compare the control-flow order of this and \e bop
   void printRaw(ostream &s) const { opcode->printRaw(s,this); }	///< Print raw info about this op to stream
+  void printExport(ostream &s) const { opcode->printExport(s, this); }
   const string &getOpName(void) const { return opcode->getName(); } ///< Return the name of this op
   void printDebug(ostream &s) const; ///< Print debug description of this op to stream
   void saveXml(ostream &s) const; ///< Write an XML description of this op to stream

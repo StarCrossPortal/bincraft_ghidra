@@ -1225,6 +1225,17 @@ void BlockGraph::printTree(ostream &s,int4 level) const
     (*iter)->printTree(s,level+1);
 }
 
+void BlockGraph::printExport(ostream &s) const
+
+{
+  vector<FlowBlock *>::const_iterator iter;
+
+  printHeader(s);
+  s << endl;
+  for(iter=list.begin();iter!=list.end();++iter)
+    (*iter)->printExport(s);
+}
+
 void BlockGraph::printRaw(ostream &s) const
 
 {
@@ -2580,6 +2591,22 @@ void BlockBasic::printRaw(ostream &s) const
     inst = *iter;
     s << inst->getSeqNum() << ":\t";
     inst->printRaw(s);
+    s << endl;
+  }
+}
+
+void BlockBasic::printExport(ostream &s) const
+
+{
+  list<PcodeOp *>::const_iterator iter;
+  PcodeOp *inst;
+
+  printHeader(s);
+  s << endl;
+  for(iter=op.begin();iter!=op.end();++iter) {
+    inst = *iter;
+    s << inst->getSeqNum() << ":\t";
+    inst->printExport(s);
     s << endl;
   }
 }

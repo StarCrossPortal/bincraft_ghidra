@@ -160,6 +160,7 @@ public:
   virtual void printHeader(ostream &s) const;		///< Print a simple description of \b this to stream
   virtual void printTree(ostream &s,int4 level) const;	///< Print tree structure of any blocks owned by \b this
   virtual void printRaw(ostream &s) const {}		///< Print raw instructions contained in \b this FlowBlock
+  virtual void printExport(ostream &s) const {}
   virtual void emit(PrintLanguage *lng) const;	///<Emit the instructions in \b this FlowBlock as structured code
   virtual const FlowBlock *getExitLeaf(void) const { return (const FlowBlock *)0; }	///< Get the FlowBlock to which \b this block exits
   virtual PcodeOp *lastOp(void) const { return (PcodeOp *)0; }		///< Get the last PcodeOp executed by \b this FlowBlock
@@ -295,6 +296,7 @@ public:
   virtual void scopeBreak(int4 curexit,int4 curloopexit);
   virtual void printTree(ostream &s,int4 level) const;
   virtual void printRaw(ostream &s) const;
+  virtual void printExport(ostream &s) const;
   virtual void emit(PrintLanguage *lng) const { lng->emitBlockGraph(this); }
   virtual FlowBlock *nextFlowAfter(const FlowBlock *bl) const;
   virtual void finalTransform(Funcdata &data);
@@ -387,6 +389,7 @@ public:
   virtual void restoreXmlBody(List::const_iterator &iter,List::const_iterator enditer,BlockMap &resolver);
   virtual void printHeader(ostream &s) const;
   virtual void printRaw(ostream &s) const;
+  virtual void printExport(ostream &s) const;
   virtual void emit(PrintLanguage *lng) const { lng->emitBlockBasic(this); }
   virtual const FlowBlock *getExitLeaf(void) const { return this; }
   virtual PcodeOp *lastOp(void) const;

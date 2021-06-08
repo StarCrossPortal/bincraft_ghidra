@@ -648,6 +648,13 @@ void Varnode::printRaw(ostream &s) const
   }
 }
 
+void Varnode::printExport(ostream &s) const {
+  string space = loc.getSpace()->getName();
+  uintb offset = loc.getOffset();
+
+  s << "(" << space << "," << offset << "," << size << ")";
+}
+
 /// Recursively print a terse textual representation of the data-flow (SSA) tree rooted at this Varnode
 /// \param s is the output stream
 /// \param depth is the current depth of the tree we are at
@@ -844,6 +851,14 @@ void Varnode::printRaw(ostream &s,const Varnode *vn)
     return;
   }
   vn->printRaw(s);
+}
+
+void Varnode::printExport(ostream &s, const Varnode *vn) {
+  if (vn == (const Varnode *) 0) {
+    s << "(null, 0, 0)";
+  } else {
+    vn->printExport(s);
+  }
 }
 
 /// \param m is the underlying address space manager
