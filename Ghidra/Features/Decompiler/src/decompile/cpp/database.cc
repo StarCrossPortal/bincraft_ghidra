@@ -2364,10 +2364,10 @@ string ScopeInternal::buildVariableName(const Address &addr,
       unaffname = glb->translate->getRegisterName(addr.getSpace(),addr.getOffset(),sz);
       if (unaffname.empty()) {
       	s << "unaff_";
-	      s << setw(8) << setfill('0') << hex << addr.getOffset();
+	s << setw(8) << setfill('0') << hex << addr.getOffset();
       }
       else
-	      s << "unaff_" << unaffname;
+	s << "unaff_" << unaffname;
     }
   }
   else if ((flags & Varnode::persist)!=0) {
