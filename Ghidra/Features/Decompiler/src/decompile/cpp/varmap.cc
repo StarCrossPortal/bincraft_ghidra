@@ -438,7 +438,7 @@ string ScopeLocal::buildVariableName(const Address &addr,
       s << spacename;
       if (start <= 0) {
 	s << 'X';		// Indicate local stack space allocated by caller
-      	start = -start;
+   start = -start;
       }
       s << dec << start;
       return makeNameUnique(s.str());
