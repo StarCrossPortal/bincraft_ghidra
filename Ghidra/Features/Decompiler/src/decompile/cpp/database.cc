@@ -2363,7 +2363,7 @@ string ScopeInternal::buildVariableName(const Address &addr,
       string unaffname;
       unaffname = glb->translate->getRegisterName(addr.getSpace(),addr.getOffset(),sz);
       if (unaffname.empty()) {
-      	s << "unaff_";
+        s << "unaff_";
 	s << setw(8) << setfill('0') << hex << addr.getOffset();
       }
       else
@@ -2423,7 +2423,6 @@ string ScopeInternal::buildVariableName(const Address &addr,
   }
   else if ((flags & Varnode::indirect_creation)!=0) {
     string regname;
-
     regname = glb->translate->getRegisterName(addr.getSpace(),addr.getOffset(),sz);
      if (shortname) {
       s << "eo";
