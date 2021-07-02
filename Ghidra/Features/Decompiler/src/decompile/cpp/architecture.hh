@@ -139,7 +139,7 @@ public:
   uint4 flowoptions;            ///< options passed to flow following engine
   uint4 max_instructions;	///< Maximum instructions that can be processed in one function
   int4 alias_block_level;	///< Aliases blocked by 0=none, 1=struct, 2=array, 3=all
-  vector<Rule *> extra_pool_rules; ///< Extra rules that go in the main pool (cpu specific, experimental)
+  vector<Rule *> extra_pool_rules; ///< Extra rules that go in the main pool (cpu specific, experimental
 
   // Rust layer systems begin
 
@@ -197,7 +197,7 @@ public:
   void globalify(void);					///< Mark \e all spaces as global
   void restoreFlowOverride(const Element *el);		///< Set flow overrides from XML
   virtual ~Architecture(void);				///< Destructor
-  
+
   const AddrSpaceManager& getAddrSpaceManager() const;
 
   virtual string getDescription(void) const { return archid; }	///< Get a string describing \b this architecture
@@ -294,6 +294,7 @@ protected:
   void parseNoHighPtr(const Element *el);		///< Apply memory alias configuration
   void parsePreferSplit(const Element *el);		///< Designate registers to be split
   void parseAggressiveTrim(const Element *el);		///< Designate how to trim extension p-code ops
+
 };
 
 /// \brief A resolver for segmented architectures
