@@ -410,25 +410,39 @@ string ScopeLocal::buildVariableName(const Address &addr,
 				     Datatype *ct,
 				     int4 &index,uint4 flags) const
 {
+  bool shortname = glb->short_var_name;
   if (((flags & (Varnode::addrtied|Varnode::persist))==Varnode::addrtied) &&
       addr.getSpace() == space) {
     if (fd->getFuncProto().getLocalRange().inRange(addr,1)) {
       intb start = (intb) AddrSpace::byteToAddress(addr.getOffset(),space->getWordSize());
       sign_extend(start,addr.getAddrSize()*8-1);
       if (stackGrowsNegative)
-	start = -start;
+	      start = -start;
       ostringstream s;
-      if (ct != (Datatype *)0)
-	ct->printNameBase(s);
+      if(shortname)
+      {
+        string spacename = addr.getSpace()->getName();
+        s << spacename[0] << index++;
+        if (start <= 0) {
+	        s << 'X';		// Indicate local stack space allocated by caller
+	        start = -start;
+        }
+
+        return makeNameUnique(s.str());
+      }
+      else{
+        if (ct != (Datatype *)0)
+	        ct->printNameBase(s);
       string spacename = addr.getSpace()->getName();
       spacename[0] = toupper(spacename[0]);
       s << spacename;
       if (start <= 0) {
-	s << 'X';		// Indicate local stack space allocated by caller
-	start = -start;
+	      s << 'X';		// Indicate local stack space allocated by caller
+      	start = -start;
       }
       s << dec << start;
       return makeNameUnique(s.str());
+      }
     }
   }
   return ScopeInternal::buildVariableName(addr,pc,ct,index,flags);

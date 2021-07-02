@@ -389,7 +389,7 @@ void Symbol::saveXmlHeader(ostream &s) const
       s << "bin\"";
     else if (format == force_float)
       s << "float\"";
-    else if (format == force_double)
+    else if (format == force_float)
       s << "double\"";
     else
       s << "hex\"";
@@ -1677,7 +1677,6 @@ Symbol *Scope::addDynamicSymbol(const string &nm,Datatype *ct,const Address &cad
 /// \param vn is an optional (may be null) Varnode representative of the Symbol
 /// \return the default name
 string Scope::buildDefaultName(Symbol *sym,int4 &base,Varnode *vn) const
-
 {
   if (vn != (Varnode *)0 && !vn->isConstant()) {
     Address usepoint;
@@ -1702,11 +1701,13 @@ string Scope::buildDefaultName(Symbol *sym,int4 &base,Varnode *vn) const
 	int4 index = sym->getCategoryIndex() + 1;
 	return buildVariableName(addr, usepoint, sym->getType(), index, flags);
     }
+    base = sym->getCategoryIndex() + 1;
     return buildVariableName(addr, usepoint, sym->getType(), base, flags);
   }
   // Should never reach here
   return buildVariableName(Address(), Address(), sym->getType(), base, 0);
 }
+
 
 /// \brief Is the given memory range marked as \e read-only
 ///
@@ -2352,6 +2353,7 @@ string ScopeInternal::buildVariableName(const Address &addr,
 {
   ostringstream s;
   int4 sz = (ct == (Datatype *)0) ? 1 : ct->getSize();
+  bool shortname = glb->short_var_name;
 
   if ((flags & Varnode::unaffected)!=0) {
     if ((flags & Varnode::return_address)!=0)
@@ -2360,11 +2362,11 @@ string ScopeInternal::buildVariableName(const Address &addr,
       string unaffname;
       unaffname = glb->translate->getRegisterName(addr.getSpace(),addr.getOffset(),sz);
       if (unaffname.empty()) {
-	s << "unaff_";
-	s << setw(8) << setfill('0') << hex << addr.getOffset();
+      	s << "unaff_";
+	      s << setw(8) << setfill('0') << hex << addr.getOffset();
       }
       else
-	s << "unaff_" << unaffname;
+	      s << "unaff_" << unaffname;
     }
   }
   else if ((flags & Varnode::persist)!=0) {
@@ -2386,14 +2388,28 @@ string ScopeInternal::buildVariableName(const Address &addr,
     string regname;
     regname = glb->translate->getRegisterName(addr.getSpace(),addr.getOffset(),sz);
     if (regname.empty()) {
-      s << "in_" << addr.getSpace()->getName() << '_';
-      s << setw(8) << setfill('0') << hex << addr.getOffset();
+      if (shortname) {
+        s << "in_" << hex << addr.getOffset();
+      } else {
+        s << "in_" << addr.getSpace()->getName() << '_';
+        s << setw(8) << setfill('0') << hex << addr.getOffset();
+      }
     }
-    else
-      s << "in_" << regname;
+    else {
+      if (shortname) {
+        s << "i" << regname;
+      } else {
+        s << "in_" << regname;
+      }
+    }
+
   }
   else if ((flags & Varnode::input)!=0) { // Regular parameter
+    if (shortname) {
+      s << "p" << dec << index;
+    } else {
     s << "param_" << dec << index;
+    }
   }
   else if ((flags & Varnode::addrtied)!=0) {
     if (ct != (Datatype *)0)
@@ -2406,26 +2422,44 @@ string ScopeInternal::buildVariableName(const Address &addr,
   }
   else if ((flags & Varnode::indirect_creation)!=0) {
     string regname;
-    s << "extraout_";
+
     regname = glb->translate->getRegisterName(addr.getSpace(),addr.getOffset(),sz);
-    if (!regname.empty())
-      s << regname;
-    else
-      s << "var";
+     if (shortname) {
+      s << "eo";
+      if (!regname.empty())
+        s << regname;
+      else
+        s << "v";
+    } else {
+      s << "extraout_";
+      if (!regname.empty())
+        s << regname;
+      else
+        s << "var";
+    }
   }
   else {			// Some sort of local variable
-    if (ct != (Datatype *)0)
-      ct->printNameBase(s);
-    s << "Var" << dec << index++;
+
+    if (shortname) {
+      s << "v" << dec << index++;
+    } else {
+      if (ct != (Datatype *)0)
+        ct->printNameBase(s);
+      s << "Var" << dec << index++;
+    }
     if (findFirstByName(s.str()) != nametree.end()) {	// If the name already exists
       for(int4 i=0;i<10;++i) {	// Try bumping up the index a few times before calling makeNameUnique
-	ostringstream s2;
-	if (ct != (Datatype *)0)
-	  ct->printNameBase(s2);
-	s2 << "Var" << dec << index++;
-	if (findFirstByName(s2.str()) == nametree.end()) {
-	  return s2.str();
-	}
+	      ostringstream s2;
+        if (shortname) {
+	        s2 << "v" << dec << index++;
+        } else {
+          if (ct != (Datatype *)0)
+	          ct->printNameBase(s2);
+	        s2 << "Var" << dec << index++;
+        }
+	      if (findFirstByName(s2.str()) == nametree.end()) {
+          return s2.str();
+        }
       }
     }
   }
