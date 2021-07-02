@@ -2363,7 +2363,7 @@ string ScopeInternal::buildVariableName(const Address &addr,
       string unaffname;
       unaffname = glb->translate->getRegisterName(addr.getSpace(),addr.getOffset(),sz);
       if (unaffname.empty()) {
-        s << "unaff_";
+       s << "unaff_";
 	s << setw(8) << setfill('0') << hex << addr.getOffset();
       }
       else
