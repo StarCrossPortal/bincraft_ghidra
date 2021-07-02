@@ -125,6 +125,7 @@ Architecture::Architecture(void) : patches(rust::Box<Patches>::from_raw((Patches
   printlist.push_back(print);
   options = new OptionDatabase(this);
   loadersymbols_parsed = false;
+
 #ifdef CPUI_STATISTICS
   stats = new Statistics();
 #endif
