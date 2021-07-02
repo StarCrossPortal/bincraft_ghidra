@@ -139,7 +139,7 @@ public:
   uint4 flowoptions;            ///< options passed to flow following engine
   uint4 max_instructions;	///< Maximum instructions that can be processed in one function
   int4 alias_block_level;	///< Aliases blocked by 0=none, 1=struct, 2=array, 3=all
-  vector<Rule *> extra_pool_rules; ///< Extra rules that go in the main pool (cpu specific, experimental
+  vector<Rule *> extra_pool_rules; ///< Extra rules that go in the main pool (cpu specific, experimental)
 
   // Rust layer systems begin
 
