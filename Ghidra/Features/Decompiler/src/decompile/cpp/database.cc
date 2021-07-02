@@ -389,7 +389,7 @@ void Symbol::saveXmlHeader(ostream &s) const
       s << "bin\"";
     else if (format == force_float)
       s << "float\"";
-    else if (format == force_float)
+    else if (format == force_double)
       s << "double\"";
     else
       s << "hex\"";
@@ -1677,6 +1677,7 @@ Symbol *Scope::addDynamicSymbol(const string &nm,Datatype *ct,const Address &cad
 /// \param vn is an optional (may be null) Varnode representative of the Symbol
 /// \return the default name
 string Scope::buildDefaultName(Symbol *sym,int4 &base,Varnode *vn) const
+
 {
   if (vn != (Varnode *)0 && !vn->isConstant()) {
     Address usepoint;
