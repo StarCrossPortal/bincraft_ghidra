@@ -417,7 +417,7 @@ string ScopeLocal::buildVariableName(const Address &addr,
       intb start = (intb) AddrSpace::byteToAddress(addr.getOffset(),space->getWordSize());
       sign_extend(start,addr.getAddrSize()*8-1);
       if (stackGrowsNegative)
-	      start = -start;
+	start = -start;
       ostringstream s;
       if(shortname)
       {
@@ -437,7 +437,7 @@ string ScopeLocal::buildVariableName(const Address &addr,
       spacename[0] = toupper(spacename[0]);
       s << spacename;
       if (start <= 0) {
-	      s << 'X';		// Indicate local stack space allocated by caller
+	s << 'X';		// Indicate local stack space allocated by caller
       	start = -start;
       }
       s << dec << start;
