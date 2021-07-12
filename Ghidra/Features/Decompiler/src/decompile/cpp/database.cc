@@ -1679,6 +1679,7 @@ Symbol *Scope::addDynamicSymbol(const string &nm,Datatype *ct,const Address &cad
 string Scope::buildDefaultName(Symbol *sym,int4 &base,Varnode *vn) const
 
 {
+  bool shortname = glb->short_var_name;
   if (vn != (Varnode *)0 && !vn->isConstant()) {
     Address usepoint;
     if (!vn->isAddrTied() && fd != (Funcdata *)0)
