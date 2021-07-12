@@ -1686,6 +1686,9 @@ string Scope::buildDefaultName(Symbol *sym,int4 &base,Varnode *vn) const
     HighVariable *high = vn->getHigh();
     if (sym->getCategory() == 0 || high->isInput()) {
       int4 index = -1;
+      if(shortname){
+        index = 1;
+      }
       if (sym->getCategory()==0)
 	index = sym->getCategoryIndex()+1;
       return buildVariableName(vn->getAddr(),usepoint,sym->getType(),index,vn->getFlags() | Varnode::input);
@@ -1703,7 +1706,7 @@ string Scope::buildDefaultName(Symbol *sym,int4 &base,Varnode *vn) const
 	int4 index = sym->getCategoryIndex() + 1;
 	return buildVariableName(addr, usepoint, sym->getType(), index, flags);
     }
-    base = sym->getCategoryIndex() + 1;
+    int4 index = sym->getCategoryIndex() + 1;
     return buildVariableName(addr, usepoint, sym->getType(), base, flags);
   }
   // Should never reach here
