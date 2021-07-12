@@ -427,7 +427,15 @@ string ScopeLocal::buildVariableName(const Address &addr,
 	        s << 'X';		// Indicate local stack space allocated by caller
 	        start = -start;
         }
-
+        if (findFirstByName(s.str()) != nametree.end()) {	// If the name already exists
+          for(int4 i=0;i<10;++i) {	// Try bumping up the index a few times before calling makeNameUnique
+	        ostringstream s2;
+	          s2 << spacename[0] << dec << index++;
+	          if (findFirstByName(s2.str()) == nametree.end()) {
+              return s2.str();
+            }
+          }
+        }
         return makeNameUnique(s.str());
       }
       else{
