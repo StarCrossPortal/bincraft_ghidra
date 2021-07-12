@@ -2450,6 +2450,8 @@ string ScopeInternal::buildVariableName(const Address &addr,
     if (shortname) {
       s << "v" << dec << index++;
     } else {
+      if (ct != (Datatype *)0)
+        ct->printNameBase(s);
       s << "Var" << dec << index++;
     }
     if (findFirstByName(s.str()) != nametree.end()) {	// If the name already exists
