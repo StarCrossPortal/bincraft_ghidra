@@ -729,7 +729,6 @@ class ScopeInternal : public Scope {
   void processHole(const Element *el);
   void processCollision(const Element *el);
   void insertNameTree(Symbol *sym);
-  SymbolNameTree::const_iterator findFirstByName(const string &name) const;
 protected:
   virtual Scope *buildSubScope(uint8 id,const string &nm);	///< Build an unattached Scope to be associated as a sub-scope of \b this
   virtual void addSymbolInternal(Symbol *sym);
@@ -791,6 +790,7 @@ public:
   virtual int4 getCategorySize(int4 cat) const;
   virtual Symbol *getCategorySymbol(int4 cat,int4 ind) const;
   virtual void setCategory(Symbol *sym,int4 cat,int4 ind);
+  SymbolNameTree::const_iterator findFirstByName(const string &name) const;
   void assignDefaultNames(int4 &base);		///< Assign a default name (via buildVariableName) to any unnamed symbol
   set<Symbol *>::const_iterator beginMultiEntry(void) const { return multiEntrySet.begin(); }	///< Start of symbols with more than one entry
   set<Symbol *>::const_iterator endMultiEntry(void) const { return multiEntrySet.end(); }	///< End of symbols with more than one entry

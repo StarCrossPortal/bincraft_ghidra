@@ -94,6 +94,12 @@ public class DecompileOptions {
 	private final static boolean ANALYZEFORLOOPS_OPTIONDEFAULT = true;	// Must match Architecture::resetDefaultsInternal
 	private boolean analyzeForLoops;
 
+	private final static String SHORTVARNAMES_OPTIONSTRING = "Analysis.Short variable names";
+	private final static String SHORTVARNAMES_OPTIONDESCRIPTION = 
+		"If set, the decompiler attempts to use shorter default variable names";
+	private final static boolean SHORTVARNAMES_OPTIONDEFAULT = false; // Must match Architecture::resetDefaultsInternal
+	private boolean shortVarNames;
+
 	private final static String NULLTOKEN_OPTIONSTRING = "Display.Print 'NULL' for null pointers";
 	private final static String NULLTOKEN_OPTIONDESCRIPTION =
 		"If set, any zero valued pointer (null pointer) will " +
@@ -377,6 +383,7 @@ public class DecompileOptions {
 		ignoreunimpl = IGNOREUNIMPL_OPTIONDEFAULT;
 		inferconstptr = INFERCONSTPTR_OPTIONDEFAULT;
 		analyzeForLoops = ANALYZEFORLOOPS_OPTIONDEFAULT;
+		shortVarNames = SHORTVARNAMES_OPTIONDEFAULT;
 		nullToken = NULLTOKEN_OPTIONDEFAULT;
 		inplaceTokens = INPLACEOP_OPTIONDEFAULT;
 		aliasBlock = ALIASBLOCK_OPTIONDEFAULT;
@@ -440,6 +447,8 @@ public class DecompileOptions {
 		inferconstptr = opt.getBoolean(INFERCONSTPTR_OPTIONSTRING, INFERCONSTPTR_OPTIONDEFAULT);
 		analyzeForLoops =
 			opt.getBoolean(ANALYZEFORLOOPS_OPTIONSTRING, ANALYZEFORLOOPS_OPTIONDEFAULT);
+		shortVarNames =
+			opt.getBoolean(SHORTVARNAMES_OPTIONSTRING, SHORTVARNAMES_OPTIONDEFAULT);
 		nullToken = opt.getBoolean(NULLTOKEN_OPTIONSTRING, NULLTOKEN_OPTIONDEFAULT);
 		inplaceTokens = opt.getBoolean(INPLACEOP_OPTIONSTRING, INPLACEOP_OPTIONDEFAULT);
 		aliasBlock = opt.getEnum(ALIASBLOCK_OPTIONSTRING, ALIASBLOCK_OPTIONDEFAULT);
@@ -724,6 +733,9 @@ public class DecompileOptions {
 		}
 		if (analyzeForLoops != ANALYZEFORLOOPS_OPTIONDEFAULT) {
 			appendOption(buf, "analyzeforloops", analyzeForLoops ? "on" : "off", "", "");
+		}
+		if (shortVarNames != SHORTVARNAMES_OPTIONDEFAULT) {
+			appendOption(buf, "shortvarnames", shortVarNames ? "on" : "off", "", "");
 		}
 		if (nullToken != NULLTOKEN_OPTIONDEFAULT) {
 			appendOption(buf, "nullprinting", nullToken ? "on" : "off", "", "");

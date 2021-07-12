@@ -1358,6 +1358,7 @@ void Architecture::resetDefaultsInternal(void)
   infer_pointers = true;
   analyze_for_loops = true;
   readonlypropagate = false;
+  short_var_names = true;
   alias_block_level = 2;	// Block structs and arrays by default
 }
 
