@@ -40,7 +40,11 @@ dependencies {
 	api "msv:msv:20050913"
 	api "msv:xsdlib:20050913"
 	api "org.antlr:antlr-runtime:3.5.2"
-	
+
+	api 'org.graalvm.truffle:truffle-api:21.2.0'
+	annotationProcessor 'org.graalvm.truffle:truffle-dsl-processor:21.2.0'
+	api 'org.graalvm.sdk:graal-sdk:21.2.0'
+
 	runtimeOnly "msv:relaxngDatatype:20050913"
 	api "msv:isorelax:20050913"	
 	

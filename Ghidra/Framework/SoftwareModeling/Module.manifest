@@ -4,3 +4,5 @@ MODULE FILE LICENSE: lib/msv-20050913.jar BSD
 MODULE FILE LICENSE: lib/xsdlib-20050913.jar BSD
 MODULE FILE LICENSE: lib/antlr-runtime-3.5.2.jar BSD
 MODULE FILE LICENSE: lib/antlr-3.5.2.jar BSD
+MODULE FILE LICENSE: lib/truffle-api-21.2.0.jar UPL
+MODULE FILE LICENSE: lib/graal-sdk-21.2.0.jar UPL
