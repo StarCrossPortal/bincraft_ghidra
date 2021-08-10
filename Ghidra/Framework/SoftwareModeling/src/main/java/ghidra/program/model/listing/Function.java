@@ -38,8 +38,8 @@ public interface Function extends Namespace {
 	public static final String RETURN_PTR_PARAM_NAME =
 		AutoParameterType.RETURN_STORAGE_PTR.getDisplayName();
 	public static final int DEFAULT_PARAM_PREFIX_LEN = DEFAULT_PARAM_PREFIX.length();
-	public static final String DEFAULT_LOCAL_PREFIX = "local_";
-	public static final String DEFAULT_LOCAL_RESERVED_PREFIX = "local_res";
+	public static final String DEFAULT_LOCAL_PREFIX = "l";
+	public static final String DEFAULT_LOCAL_RESERVED_PREFIX = "lres";
 	public static final String DEFAULT_LOCAL_TEMP_PREFIX = "temp_";
 	public static final int DEFAULT_LOCAL_PREFIX_LEN = DEFAULT_LOCAL_PREFIX.length();
 	public static final String UNKNOWN_CALLING_CONVENTION_STRING = "unknown";

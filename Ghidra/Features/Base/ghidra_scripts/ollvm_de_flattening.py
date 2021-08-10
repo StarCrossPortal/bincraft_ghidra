@@ -20,8 +20,9 @@
 #
 # 1.You need to select a state variable, usually at the head before the start of the loop.
 #
-# 2.The state variable is mainly used in the distributor, and then it is shown as assigning and judging the same variable in the loop,
-# e.g. local_14 = 0x6e36350b, then in the loop, local_14 will be judged and local_14 will be assigned.
+# 2.The state variable is mainly used in the distributor, and then it is shown as assigning and judging the same
+# variable in the loop, e.g. local_14 = 0x6e36350b, then in the loop, local_14 will be judged and local_14 will be
+# assigned.
 #
 # 3.Run the script after selecting the state variable.
 # @category Repair
@@ -47,6 +48,18 @@ from ghidra.app.plugin.assembler import Assemblers
 logging.basicConfig(level=logging.INFO,
                     format='[%(asctime)s][%(levelname)s] - %(message)s',
                     datefmt='%m/%d/%Y %H:%M:%S %p')
+
+arch = currentProgram.getLanguage().getProcessor().toString()
+addrs = currentProgram.getAddressFactory()
+
+orig_hex = hex
+
+
+def hex(x):
+    if orig_hex(x)[-1] == 'L':
+        return orig_hex(x)[:-1]
+    else:
+        return orig_hex(x)
 
 
 def get_last_pcode(block):
@@ -144,7 +157,9 @@ class Patcher(object):
         inst = getInstructionAt(addr)
         inst.patchPcode(patch_pcode)
 
-    def patch_conditional_jump(self, ins, true_addr, false_addr):
+    def patch_conditional_jump(self, ins, true_block, false_block, target_block):
+        true_addr = true_block.getStart()
+        false_addr = false_block.getStart()
         p_code = ins.getPcode()
 
         reg_datas = []
@@ -160,16 +175,56 @@ class Patcher(object):
                 if p_code[index].opcode == PcodeOp.COPY and p_code[index + 1].opcode == PcodeOp.BRANCH and \
                         p_code[index + 2].opcode == PcodeOp.COPY and p_code[index + 3].opcode == PcodeOp.INT_ZEXT:
                     reg_data_idx = index
+                # ppc64le
+                if p_code[index].opcode == PcodeOp.COPY and p_code[index + 1].opcode == PcodeOp.INT_SUB and \
+                        p_code[index + 2].opcode == PcodeOp.INT_RIGHT and p_code[index + 3].opcode == PcodeOp.INT_AND:
+                    reg_data_idx = index + 4
+
+        # mips display patch
+        if arch == "MIPS":
+            if p_code[0].opcode == PcodeOp.INT_NOTEQUAL and p_code[1].opcode == PcodeOp.CBRANCH:
+                branch_reg = p_code[0].getOutput()
+            value = None
+
+            target_start_addr = target_block.getStart()
+            target_end_addr = target_block.getStop()
+            # patch xori to li
+            while target_start_addr <= target_end_addr:
+                current_inst = getInstructionAt(target_start_addr)
+                current_pcode = current_inst.getPcode()[0]
+                if current_pcode.opcode == PcodeOp.INT_XOR and current_pcode.getInput(1).isConstant() is True:
+                    value_inputs = array(Varnode, [current_pcode.getInput(1)])
+                    # (register,0x10,8) v0
+                    value_output = Varnode(addrs.getAddress(addrs.registerSpace.spaceID, 0x10), 8)
+                    value = RawPcodeImpl(PcodeOp.COPY, value_inputs, value_output)
+                    current_inst.patchPcode(array(RawPcode, [value]))
+                target_start_addr = target_start_addr.add(4)
+
+            inst_before = getInstructionBefore(ins)
+            inst_before_pcode = inst_before.getPcode()[0]
+            # patch ori to li
+            if inst_before_pcode.getInput(0).offset == 0x18 and value is not None:
+                inst_before.patchPcode(array(RawPcode, [value]))
+            elif inst_before_pcode.getInput(0).offset == 0x18 and value is None:
+                value_inputs = array(Varnode, [Varnode(addrs.getAddress(addrs.constantSpace.spaceID, 0), 8)])
+                value_output = Varnode(addrs.getAddress(addrs.registerSpace.spaceID, 0x10), 8)
+                value = RawPcodeImpl(PcodeOp.COPY, value_inputs, value_output)
+                inst_before.patchPcode(array(RawPcode, [value]))
+
         if branch_reg == 0:
             for var in p_code[0].getInputs():
                 if var.isRegister():
                     branch_reg = var
 
-        # construct register pcode
         for idx in range(reg_data_idx):
             reg_inputs = p_code[idx].getInputs()
             reg_outs = p_code[idx].getOutput()
             reg_opcode = p_code[idx].getOpcode()
+            # construct beq v0,at,address
+            if arch == "MIPS" and reg_opcode == PcodeOp.INT_NOTEQUAL:
+                reg_inputs = array(Varnode, [Varnode(addrs.getAddress(addrs.registerSpace.spaceID, 0x8), 8),
+                                             Varnode(addrs.getAddress(addrs.registerSpace.spaceID, 0x10), 8)])
+                reg_opcode = PcodeOp.INT_EQUAL
             reg_data = RawPcodeImpl(reg_opcode, reg_inputs, reg_outs)
             reg_datas.append(reg_data)
         raw_pcode = [reg for reg in reg_datas]
@@ -182,8 +237,16 @@ class Patcher(object):
             # construct false data
             false_inputs = array(Varnode, [Varnode(false_addr, 8)])
             false_branch = RawPcodeImpl(PcodeOp.BRANCH, false_inputs, None)
-            patch_pcode = array(RawPcode, [true_branch, false_branch])
+
+            # ppc64le iseleq
+            if pcode_len > 6 and p_code[5].opcode == PcodeOp.BOOL_NEGATE:
+                raw_pcode.append(true_branch)
+                raw_pcode.append(false_branch)
+                patch_pcode = array(RawPcode, raw_pcode)
+            else:
+                patch_pcode = array(RawPcode, [true_branch, false_branch])
         else:
+
             # construct true data
             true_inputs = array(Varnode, [Varnode(true_addr, 8), branch_reg])
             true_branch = RawPcodeImpl(PcodeOp.CBRANCH, true_inputs, None)
@@ -218,9 +281,9 @@ class Patcher(object):
 
         # conditional jump
         else:
-            true_addr = link[1].getStart()
-            false_addr = link[2].getStart()
-            self.patch_conditional_jump(ins, true_addr, false_addr)
+            true_block = link[1]
+            false_block = link[2]
+            self.patch_conditional_jump(ins, true_block, false_block, block)
 
 
 def get_high_function(current_program, current_address):

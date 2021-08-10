@@ -656,6 +656,7 @@ public class SymbolUtilities {
 	public static String getAddressString(Address addr) {
 		String addrString = addr.toString();
 		addrString = addrString.replace(':', '_');
+		addrString = addrString.replaceFirst("^0+", "");
 		return addrString;
 	}
 
