@@ -682,7 +682,7 @@ void PrintC::opIntZext(const PcodeOp *op,const PcodeOp *readOp)
       opTypeCast(op);
   }
   else
-    opFunc(op);
+    opTypeCast(op);
 }
 
 void PrintC::opIntSext(const PcodeOp *op,const PcodeOp *readOp)
@@ -695,7 +695,7 @@ void PrintC::opIntSext(const PcodeOp *op,const PcodeOp *readOp)
       opTypeCast(op);
   }
   else
-    opFunc(op);
+    opTypeCast(op);
 }
 
 /// Print the BOOL_NEGATE but check for opportunities to flip the next operator instead
@@ -724,7 +724,7 @@ void PrintC::opSubpiece(const PcodeOp *op)
 				   (uint4)op->getIn(1)->getOffset()))
     opTypeCast(op);
   else
-    opFunc(op);
+    opTypeCast(op);
 }
 
 void PrintC::opPtradd(const PcodeOp *op)
