@@ -316,7 +316,8 @@ bool CastStrategyC::isSubpieceCast(Datatype *outtype,Datatype *intype,uint4 offs
   if ((inmeta!=TYPE_INT)&&
       (inmeta!=TYPE_UINT)&&
       (inmeta!=TYPE_UNKNOWN)&&
-      (inmeta!=TYPE_PTR))
+      (inmeta!=TYPE_PTR)&&
+      (inmeta!=TYPE_ARRAY))
     return false;
   type_metatype outmeta = outtype->getMetatype();
   if ((outmeta!=TYPE_INT)&&
@@ -348,7 +349,9 @@ bool CastStrategyC::isSubpieceCastEndian(Datatype *outtype,Datatype *intype,uint
 bool CastStrategyC::isSextCast(Datatype *outtype,Datatype *intype) const
 
 {
-  if (outtype->getMetatype()!=TYPE_INT) return false;
+  if ((outtype->getMetatype()!=TYPE_INT)&&
+      (outtype->getMetatype()!=TYPE_ARRAY))
+    return false;
   type_metatype metain = intype->getMetatype();
   if ((metain!=TYPE_INT)&&(metain!=TYPE_UINT)&&(metain!=TYPE_BOOL))
     return false;
@@ -358,7 +361,9 @@ bool CastStrategyC::isSextCast(Datatype *outtype,Datatype *intype) const
 bool CastStrategyC::isZextCast(Datatype *outtype,Datatype *intype) const
 
 {
-  if (outtype->getMetatype()!=TYPE_UINT) return false;
+  if ((outtype->getMetatype()!=TYPE_UINT)&&
+      (outtype->getMetatype()!=TYPE_ARRAY)) 
+    return false;
   type_metatype metain = intype->getMetatype();
   if ((metain!=TYPE_INT)&&(metain!=TYPE_UINT)&&(metain!=TYPE_BOOL))
     return false;
