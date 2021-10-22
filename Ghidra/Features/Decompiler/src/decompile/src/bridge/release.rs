@@ -21,7 +21,7 @@ pub(crate) mod ffi {
     extern "Rust" {
         type Patches;
         unsafe fn new_patches(arch: *mut Architecture) -> Box<Patches>;
-        fn add_patch(self: &mut Patches, space: &CxxString, offset: usize, size: i32, payload: &CxxString);
+        fn add_patch(self: &mut Patches, space: &CxxString, offset: u64, size: i32, payload: &CxxString);
         unsafe fn resolve_patch(self: &Patches, addr: &Address, emit: *mut PcodeEmit) -> i32;
     }
 
@@ -53,13 +53,13 @@ pub(crate) mod ffi {
 
         fn getName(self: &AddrSpace) -> &CxxString;
 
-        unsafe fn new_address(space: *mut AddrSpace, off: usize) -> UniquePtr<Address>;
+        unsafe fn new_address(space: *mut AddrSpace, off: u64) -> UniquePtr<Address>;
         fn getSpace(self: &Address) -> *mut AddrSpace;
-        fn getOffset(self: &Address) -> usize;
+        fn getOffset(self: &Address) -> u64;
 
         unsafe fn new_varnode_data(
             space: *mut AddrSpace,
-            offset: usize,
+            offset: u64,
             size: u32,
         ) -> UniquePtr<VarnodeData>;
 

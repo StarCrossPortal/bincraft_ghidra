@@ -26,7 +26,7 @@ use std::convert::TryInto;
 struct Address {
     pub space: String,
     #[serde(with = "crate::serde_int")]
-    pub offset: usize,
+    pub offset: u64,
 }
 
 
@@ -55,7 +55,7 @@ impl Patches {
         }
     }
 
-    pub(crate) fn add_patch(&mut self, space: &CxxString, offset: usize, size: i32, payload: &CxxString) {
+    pub(crate) fn add_patch(&mut self, space: &CxxString, offset: u64, size: i32, payload: &CxxString) {
         let space = space.to_string();
         let payload = payload.to_string();
 
